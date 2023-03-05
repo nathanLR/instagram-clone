@@ -1,0 +1,7 @@
+.idea/
+.vscode/
+back/node_modules/
+back/build/
+back/tmp/
+back/temp/
+back/dist/
