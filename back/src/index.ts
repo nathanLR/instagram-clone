@@ -1,20 +1,27 @@
 import { AppDataSource } from "./data-source";
 import { User } from "./entity/User";
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import HelloResolver from "./resolvers/hello";
 
 AppDataSource.initialize()
   .then(async () => {
-    console.log("Inserting a new user into the database...");
-    const user = new User();
-    user.setUserName("nathanlr");
-    user.setEmail("nathan.leroux3@gmail.com");
-    user.setPassword("nathan13");
-    await AppDataSource.manager.save(user);
-    console.log("Saved a new user with id: " + user.getId());
+    const app = express();
+    const apolloServer = new ApolloServer({
+      schema: await buildSchema({
+        resolvers: [HelloResolver],
+        validate: false,
+      }),
+    });
+    await apolloServer.start();
+    apolloServer.applyMiddleware({ app });
+    app.listen(4000, () => {
+      console.log("app listening on port 4000...");
+    });
 
     console.log("Loading users from the database...");
     const users = await AppDataSource.manager.find(User);
     console.log("Loaded users: ", users);
-
-    console.log("Here you can setup and run express / fastify / any other framework.");
   })
   .catch((error) => console.log(error));
