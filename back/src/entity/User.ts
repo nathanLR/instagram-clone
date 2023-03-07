@@ -1,3 +1,4 @@
+import { Field, Int, ObjectType } from "type-graphql";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,23 +7,30 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
+@ObjectType()
 @Entity()
 export class User {
+  @Field(() => Int)
   @PrimaryGeneratedColumn()
-  private id: number;
+  public id: number;
 
+  @Field(() => String)
   @Column({ name: "user_name", nullable: false, length: 100 })
   private userName: string;
 
+  @Field(() => String)
   @Column({ name: "user_email", nullable: false, length: 100 })
   private email: string;
 
+  @Field(() => String)
   @Column({ name: "user_password", nullable: false })
   private password: string;
 
+  @Field(() => String)
   @CreateDateColumn({ name: "created_at", type: "timestamptz" })
   private createdAt: Date;
 
+  @Field(() => String)
   @UpdateDateColumn({ name: "updated_at", type: "timestamptz" })
   private updatedAt: Date;
 
