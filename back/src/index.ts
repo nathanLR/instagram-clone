@@ -21,11 +21,11 @@ AppDataSource.initialize()
     app.listen(4000, () => {
       console.log("app listening on port 4000...");
     });
-    const nu = new User();
-    nu.setUserName("samsam");
-    nu.setEmail("samuel@gmail.com");
-    nu.setPassword("samsam13");
-    await AppDataSource.manager.save(nu);
+    // const nu = new User();
+    // nu.setUserName("samsam");
+    // nu.setEmail("samuel@gmail.com");
+    // nu.setPassword("samsam13");
+    // await AppDataSource.manager.save(nu);
     console.log("Loading users from the database...");
     const users = await AppDataSource.manager.find(User);
     console.log("Loaded users: ", users);

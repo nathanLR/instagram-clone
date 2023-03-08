@@ -16,15 +16,15 @@ export class User {
 
   @Field(() => String)
   @Column({ name: "user_name", nullable: false, length: 100 })
-  private userName: string;
+  public userName: string;
 
   @Field(() => String)
   @Column({ name: "user_email", nullable: false, length: 100 })
-  private email: string;
+  public email: string;
 
   @Field(() => String)
   @Column({ name: "user_password", nullable: false })
-  private password: string;
+  public password: string;
 
   @Field(() => String)
   @CreateDateColumn({ name: "created_at", type: "timestamptz" })
