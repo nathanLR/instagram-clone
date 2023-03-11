@@ -65,7 +65,7 @@ export class UserResolver {
   @Mutation(() => UserReturnType)
   async login(
     @Arg("loginOptions", () => UserInputLoginType) loginOptions: UserInputLoginType,
-    @Ctx() { em }: MyContext
+    @Ctx() { em, req }: MyContext
   ): Promise<UserReturnType> {
     let errors: FieldError[] = [];
 
@@ -89,8 +89,41 @@ export class UserResolver {
         error: errors,
       };
     }
+    req.session.userId = userExist.getId();
+    console.log("session" + req.session.userId);
     return {
       user: userExist,
+    };
+  }
+
+  @Query(() => UserReturnType)
+  async who(@Ctx() { em, req }: MyContext): Promise<UserReturnType> {
+    if (typeof req.session.userId === "undefined") {
+      return {
+        error: [
+          {
+            field: "session",
+            message: "No session",
+          },
+        ],
+      };
+    }
+    const userConnected: User | null = await em.findOne(User, {
+      where: { id: req.session.userId },
+    });
+    if (!userConnected) {
+      return {
+        error: [
+          {
+            field: "id",
+            message: "This user does not exist anymore.",
+          },
+        ],
+      };
+    }
+
+    return {
+      user: userConnected,
     };
   }
 

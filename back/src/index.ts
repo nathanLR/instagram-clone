@@ -4,31 +4,53 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { UserResolver, HelloResolver } from "./resolvers";
-import { User } from "./entity";
+import expressSession from "express-session";
+import connectPg from "connect-pg-simple";
+import { _DEV_ } from "./constants";
+import { MyContext } from "./types";
 
 AppDataSource.initialize()
   .then(async () => {
     AppDataSource.runMigrations();
     const app = express();
+    const pgSession = connectPg(expressSession);
+    app.set("trust proxy", _DEV_);
+    app.use(
+      expressSession({
+        store: new pgSession({
+          disableTouch: true,
+          conString: "postgres://postgres:sp@localhost:5432/instagram",
+        }),
+        secret: "azfklnhazfmazea",
+        cookie: {
+          maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        },
+        name: "qid",
+        resave: false,
+        saveUninitialized: false,
+      })
+    );
+
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
         resolvers: [HelloResolver, UserResolver],
         validate: false,
       }),
-      context: () => ({ em: AppDataSource.manager }),
+      context: ({ req, res }): MyContext => ({ em: AppDataSource.manager, req, res }),
     });
+
+    const corsSettings = {
+      origin: ["https://studio.apollographql.com"],
+      credentials: true,
+    };
+
     await apolloServer.start();
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({ app, cors: corsSettings });
     app.listen(4000, () => {
       console.log("app listening on port 4000...");
     });
-    // const nu = new User();
-    // nu.setUserName("samsam");
-    // nu.setEmail("samuel@gmail.com");
-    // nu.setPassword("samsam13");
-    // await AppDataSource.manager.save(nu);
-    console.log("Loading users from the database...");
-    const users = await AppDataSource.manager.find(User);
-    console.log("Loaded users: ", users);
   })
   .catch((error) => console.log(error));
