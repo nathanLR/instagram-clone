@@ -19,11 +19,10 @@ export class User {
   public userName: string;
 
   @Field(() => String)
-  @Column({ name: "user_email", nullable: false, length: 100 })
+  @Column({ name: "user_email", nullable: false, length: 100, unique: true })
   public email: string;
 
-  @Field(() => String)
-  @Column({ name: "user_password", nullable: false })
+  @Column({ name: "user_password", nullable: false, length: 200 })
   public password: string;
 
   @Field(() => String)
@@ -67,5 +66,11 @@ export class User {
 
   public getDateOfUpdate = (): Date => {
     return this.updatedAt;
+  };
+  public toString = (): string => {
+    return "["
+      .concat("id: ", this.getId().toString(), ", ")
+      .concat("userName: ", this.getUserName(), ", ")
+      .concat("email: ", this.getEmail(), "]");
   };
 }

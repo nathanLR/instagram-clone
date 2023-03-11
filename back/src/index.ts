@@ -8,6 +8,7 @@ import { User } from "./entity";
 
 AppDataSource.initialize()
   .then(async () => {
+    AppDataSource.runMigrations();
     const app = express();
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
