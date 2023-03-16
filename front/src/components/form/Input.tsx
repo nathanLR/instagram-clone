@@ -13,13 +13,11 @@ type InputPropType = {
   type: React.HTMLInputTypeAttribute;
   name: string;
   id: string;
+  value: string;
+  onChange: (event: React.FormEvent<HTMLInputElement>) => void;
 };
 
-const Input = ({ placeholder, label, type, id, name }: InputPropType) => {
-  const [value, setValue] = useState<string>("");
-  const handleChange = ({ currentTarget }: React.FormEvent<HTMLInputElement>): void => {
-    setValue(currentTarget.value);
-  };
+const Input = ({ placeholder, label, type, id, name, value, onChange }: InputPropType) => {
   return (
     <div className={InputClasses.inputContainer}>
       <label htmlFor={id} style={{ display: "none" }}>
@@ -30,7 +28,7 @@ const Input = ({ placeholder, label, type, id, name }: InputPropType) => {
         placeholder={placeholder}
         value={value}
         onChange={(e) => {
-          handleChange(e);
+          onChange(e);
         }}
         id={id}
         name={name}

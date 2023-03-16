@@ -8,9 +8,10 @@ type ButtonPropType = {
   color: string;
   children: React.ReactNode;
   event?: () => void;
+  disabled: boolean;
 };
 
-const Button = ({ type, name, children, id, bgColor, event, color }: ButtonPropType) => {
+const Button = ({ type, name, children, id, bgColor, event, color, disabled }: ButtonPropType) => {
   return (
     <div className={ButtonClasses.buttonContainer}>
       <button
@@ -19,6 +20,7 @@ const Button = ({ type, name, children, id, bgColor, event, color }: ButtonPropT
         style={{ backgroundColor: bgColor, color: color }}
         name={name}
         id={id}
+        disabled={disabled}
       >
         {children}
       </button>
