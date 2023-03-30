@@ -8,13 +8,20 @@ import expressSession from "express-session";
 import connectPg from "connect-pg-simple";
 import { _DEV_ } from "./constants";
 import { MyContext } from "./types";
+import cors from "cors";
 
 AppDataSource.initialize()
   .then(async () => {
     AppDataSource.runMigrations();
     const app = express();
     const pgSession = connectPg(expressSession);
-    app.set("trust proxy", _DEV_);
+    app.use(
+      cors({
+        origin: "http://127.0.0.1:5173",
+        credentials: true,
+      })
+    );
+    app.set("trust proxy", true);
     app.use(
       expressSession({
         store: new pgSession({
@@ -42,13 +49,8 @@ AppDataSource.initialize()
       context: ({ req, res }): MyContext => ({ em: AppDataSource.manager, req, res }),
     });
 
-    const corsSettings = {
-      origin: ["https://studio.apollographql.com"],
-      credentials: true,
-    };
-
     await apolloServer.start();
-    apolloServer.applyMiddleware({ app, cors: corsSettings });
+    apolloServer.applyMiddleware({ app, cors: false });
     app.listen(4000, () => {
       console.log("app listening on port 4000...");
     });

@@ -1,0 +1,16 @@
+.navContainer {
+  border-right: 1px solid rgb(219, 219, 219);
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 335px;
+  .navWrapper {
+    padding: 8px 12px 20px;
+  }
+  .logo {
+    height: 73px;
+    padding: 25px 12px 20px;
+    margin-bottom: 20px;
+  }
+}

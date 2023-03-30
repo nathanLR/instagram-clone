@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import CTARegisterLoginClasses from "./CTARegisterLogin.module.scss";
 
 type CTARegisterLoginPropType = {
@@ -11,9 +12,9 @@ function CTARegisterLogin({ text, linkHref, linkContent }: CTARegisterLoginPropT
     <div className={CTARegisterLoginClasses.container}>
       <p className={CTARegisterLoginClasses.ctaP}>
         {text}
-        <a href={linkHref} role="link">
+        <Link to={linkHref} role="link">
           {linkContent}
-        </a>
+        </Link>
       </p>
     </div>
   );

@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useMutation } from "urql";
+import { validationEmail } from "../../constants";
+import { login } from "../../graphql/mutations";
 import Button from "../form/Button";
 import Input from "../form/Input";
-import Logo from "../global/Logo";
-import RegisterClasses from "./register.module.scss";
-import { validationEmail } from "../../constants";
-import RegisterLoginComposite from "../RegisterLoginComposite/RegisterLoginComposite";
 import CTARegisterLogin from "../RegisterLoginComposite/CTARegisterLogin";
-import { useQuery, useMutation } from "urql";
-import { register } from "../../graphql/mutations";
+import RegisterLoginComposite from "../RegisterLoginComposite/RegisterLoginComposite";
 
-const Register = () => {
-  const [registerResult, registerFn] = useMutation(register);
+const Login = () => {
+  const [loginResult, loginFn] = useMutation(login);
 
   const [form, setForm] = useState<Record<string, string>>({
     email: "",
-    userName: "",
     password: "",
   });
 
@@ -26,17 +23,13 @@ const Register = () => {
       };
     });
   };
+
   const isFormValid = (): boolean => {
-    return (
-      form.email.length > 0 &&
-      validationEmail.test(form.email) &&
-      form.userName.length > 0 &&
-      form.password.length > 0
-    );
+    return form.email.length > 0 && validationEmail.test(form.email) && form.password.length > 0;
   };
   const handleSubmit = (): void => {
     console.log(form);
-    registerFn({ userData: form }).then((retour) => {
+    loginFn({ loginOptions: form }).then((retour) => {
       console.log(retour);
     });
   };
@@ -44,9 +37,6 @@ const Register = () => {
     <>
       <RegisterLoginComposite>
         <form>
-          <h2 className={RegisterClasses.registerTitle}>
-            Inscrivez-vous pour voir les photos et vidéos de vos amis.
-          </h2>
           <Input
             placeholder="Adresse email"
             label="Adresse email"
@@ -54,15 +44,6 @@ const Register = () => {
             name="email"
             id="email"
             value={form.email}
-            onChange={handleFormState}
-          />
-          <Input
-            placeholder="Nom d'utilisateur"
-            label="Nom d'utilisateur"
-            type="text"
-            name="userName"
-            id="userName"
-            value={form.userName}
             onChange={handleFormState}
           />
           <Input
@@ -83,17 +64,17 @@ const Register = () => {
             event={handleSubmit}
             disabled={!isFormValid()}
           >
-            Suivant
+            Se connecter
           </Button>
         </form>
       </RegisterLoginComposite>
       <CTARegisterLogin
-        text="Vous avez un compte ? "
-        linkContent="Connectez-vous"
-        linkHref="/login"
+        text="Vous n'avez pas de compte ? "
+        linkContent="Inscrivez-vous"
+        linkHref="/register"
       />
     </>
   );
 };
 
-export default Register;
+export default Login;
